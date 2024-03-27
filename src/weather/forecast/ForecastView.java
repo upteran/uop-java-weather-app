@@ -2,6 +2,7 @@
 package weather;
 
 import javafx.geometry.Insets;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.control.Label;
@@ -28,7 +29,11 @@ public class ForecastView extends BorderPane {
                     "\nHumidity: " + day.getHumidity() +
                     "\nWind Speed: " + day.getWindSpeed() +
                     "\nCondition: " + day.getCondition());
+
+            ImageView image = new ForecastIconView(day.getIcon()).getForecastIconView();
+            dayLabel.setGraphic(image);
             forecastPane.getChildren().add(dayLabel);
+
             FlowPane.setMargin(dayLabel, new Insets(10, 10, 10, 10));
         }
         this.setCenter(forecastPane);

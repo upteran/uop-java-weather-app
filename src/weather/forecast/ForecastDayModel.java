@@ -1,17 +1,35 @@
-// WeatherData.java
+// ForecastModel.java
 package weather;
 
-public class WeatherData {
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+class ForecastDay {
+    private String date;
     private double temperature;
     private double humidity;
     private double windSpeed;
     private String condition;
+    private String icon;
 
-    public WeatherData(double temperature, double humidity, double windSpeed, String condition) {
+    public ForecastDay(String date, double temperature, double humidity, double windSpeed, String condition, String icon) {
+        this.date = date;
         this.temperature = temperature;
         this.humidity = humidity;
         this.windSpeed = windSpeed;
         this.condition = condition;
+        this.icon = icon;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public double getTemperature() {
@@ -44,5 +62,8 @@ public class WeatherData {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+    public String getIcon() {
+        return icon;
     }
 }

@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.json.JSONObject;
 
@@ -19,7 +21,7 @@ public class WeatherAPI {
     private double locationLat;
     private double locationLon;
 
-    public WeatherData getWeatherData(String location) {
+    public ForecastDay getWeatherData(String location) {
         String urlString = BASE_URL + location + "&appid=" + API_KEY;
         try {
             URL url = new URL(urlString);
@@ -41,8 +43,16 @@ public class WeatherAPI {
             double humidity = jsonObject.getJSONObject("main").getDouble("humidity");
             double windSpeed = jsonObject.getJSONObject("wind").getDouble("speed");
             String condition = jsonObject.getJSONArray("weather").getJSONObject(0).getString("main");
+            String icon = jsonObject.getJSONArray("weather").getJSONObject(0).getString("icon");
 
-            return new WeatherData(temperature, humidity, windSpeed, condition);
+            // Get current date and time
+            LocalDateTime now = LocalDateTime.now();
+
+            // Format date and time into a string
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = now.format(formatter);
+//            return new ForecastDay(temperature, humidity, windSpeed, condition);
+            return new ForecastDay(formattedDateTime, temperature, humidity, windSpeed, condition, icon);
         } catch (IOException e) {
             throw new RuntimeException("Error: Unable to get weather data", e);
         }

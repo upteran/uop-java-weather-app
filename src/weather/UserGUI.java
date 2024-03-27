@@ -2,10 +2,13 @@
 package weather;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -19,18 +22,31 @@ public class UserGUI extends Application {
         TextField locationField = new TextField();
         Button getWeatherButton = new Button("Get Weather");
         Label weatherLabel = new Label();
+        FlowPane forecastPane = new FlowPane();
 
         getWeatherButton.setOnAction(e -> {
             String location = locationField.getText();
-            WeatherData weatherData = weatherAPI.getWeatherData(location);
-            weatherLabel.setText("Temperature: " + weatherData.getTemperature() +
-                    "\nHumidity: " + weatherData.getHumidity() +
-                    "\nWind Speed: " + weatherData.getWindSpeed() +
-                    "\nCondition: " + weatherData.getCondition());
+            ForecastDay day = weatherAPI.getWeatherData(location);
+            System.out.println(day.getDate());
+            weatherLabel.setText("Date: " + day.getDate() +
+                    "\nTemperature: " + day.getTemperature() +
+                    "\nHumidity: " + day.getHumidity() +
+                    "\nWind Speed: " + day.getWindSpeed() +
+                    "\nCondition: " + day.getCondition());
+
+            ImageView image = new ForecastIconView(day.getIcon()).getForecastIconView();
+            weatherLabel.setGraphic(image);
+
+            if (forecastPane.getChildren().contains(weatherLabel)) {
+                forecastPane.getChildren().remove(weatherLabel);
+            }
+            forecastPane.getChildren().add(weatherLabel);
+
+            FlowPane.setMargin(weatherLabel, new Insets(10, 10, 10, 10));
         });
 
         Button forecastButton = new Button("Short-term forecast");
-        VBox vbox = new VBox(locationField, getWeatherButton, weatherLabel, forecastButton);
+        VBox vbox = new VBox(locationField, getWeatherButton, forecastPane, forecastButton);
         Scene mainScene = new Scene(vbox, 600, 900);
 
         forecastButton.setOnAction(e -> {
