@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import org.json.JSONObject;
+import weather.forecast.ForecastDayModel;
+import weather.forecast.ForecastWeekModel;
 
 public class WeatherAPI {
     private static final String API_KEY = "7096e11ac8913c244bdee20f178c3613";
@@ -21,7 +23,7 @@ public class WeatherAPI {
     private double locationLat;
     private double locationLon;
 
-    public ForecastDay getWeatherData(String location) {
+    public ForecastDayModel getWeatherData(String location) {
         String urlString = BASE_URL + location + "&appid=" + API_KEY;
         try {
             URL url = new URL(urlString);
@@ -52,13 +54,13 @@ public class WeatherAPI {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = now.format(formatter);
 //            return new ForecastDay(temperature, humidity, windSpeed, condition);
-            return new ForecastDay(formattedDateTime, temperature, humidity, windSpeed, condition, icon);
+            return new ForecastDayModel(formattedDateTime, temperature, humidity, windSpeed, condition, icon);
         } catch (IOException e) {
             throw new RuntimeException("Error: Unable to get weather data", e);
         }
     }
 
-    public ForecastModel getShortTermForecast(String location) {
+    public ForecastWeekModel getShortTermForecast(String location) {
         // https://pro.openweathermap.org/data/2.5/forecast/hourly?lat={lat}&lon={lon}&appid={API key}
         String urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=" + locationLat + "&lon=" + locationLat  + "&appid=" + API_KEY;
         try {
@@ -79,7 +81,7 @@ public class WeatherAPI {
             // This depends on the structure of the response from the OpenWeatherMap API
             String forecast = parseForecast(jsonObject);
 
-            return new ForecastModel(jsonObject);
+            return new ForecastWeekModel(jsonObject);
         } catch (IOException e) {
             throw new RuntimeException("Error: Unable to get forecast data", e);
         }

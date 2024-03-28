@@ -1,5 +1,5 @@
 // ForecastIconView.java
-package weather;
+package weather.forecast;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

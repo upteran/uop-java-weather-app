@@ -1,7 +1,16 @@
-public class ForecastModel {
-    private List<ForecastDay> forecast;
+package weather.forecast;// weather.forecast.ForecastWeekModel.java
 
-    public ForecastModel(JSONObject forecastRaw) {
+import org.json.JSONArray;
+import org.json.JSONObject;
+import weather.forecast.ForecastDayModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ForecastWeekModel {
+    private List<ForecastDayModel> forecast;
+
+    public ForecastWeekModel(JSONObject forecastRaw) {
         System.out.println(forecastRaw.toString()); // print the raw JSON response
 
         this.forecast = new ArrayList<>();
@@ -16,11 +25,11 @@ public class ForecastModel {
             double windSpeed = wind.getDouble("speed");
             String condition = dayForecast.getJSONArray("weather").getJSONObject(0).getString("main");
             String icon = dayForecast.getJSONArray("weather").getJSONObject(0).getString("icon");
-            this.forecast.add(new ForecastDay(date, temperature, humidity, windSpeed, condition, icon));
+            this.forecast.add(new ForecastDayModel(date, temperature, humidity, windSpeed, condition, icon));
         }
     }
 
-    public List<ForecastDay> getForecast() {
+    public List<ForecastDayModel> getForecast() {
         return forecast;
     }
 }

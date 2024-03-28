@@ -1,13 +1,7 @@
-// ForecastModel.java
-package weather;
+// weather.forecast.ForecastWeekModel.java
+package weather.forecast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-class ForecastDay {
+public class ForecastDayModel {
     private String date;
     private double temperature;
     private double humidity;
@@ -15,7 +9,7 @@ class ForecastDay {
     private String condition;
     private String icon;
 
-    public ForecastDay(String date, double temperature, double humidity, double windSpeed, String condition, String icon) {
+    public ForecastDayModel(String date, double temperature, double humidity, double windSpeed, String condition, String icon) {
         this.date = date;
         this.temperature = temperature;
         this.humidity = humidity;
