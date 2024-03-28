@@ -2,13 +2,10 @@
 package weather;
 
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,6 +13,12 @@ import org.json.JSONObject;
 import weather.forecast.ForecastDayModel;
 import weather.forecast.ForecastWeekModel;
 
+/**
+ * WeatherAPI is a class that interacts with the OpenWeatherMap API to fetch weather data.
+ * It provides methods to get the current weather data for a specific location and to get a short-term forecast for a specific location.
+ *
+ * The class uses HttpURLConnection to make GET requests to the OpenWeatherMap API and JSONObject to parse the JSON responses.
+ */
 public class WeatherAPI {
     private static final String API_KEY = "7096e11ac8913c244bdee20f178c3613";
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
@@ -53,7 +56,6 @@ public class WeatherAPI {
             // Format date and time into a string
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             String formattedDateTime = now.format(formatter);
-//            return new ForecastDay(temperature, humidity, windSpeed, condition);
             return new ForecastDayModel(formattedDateTime, temperature, humidity, windSpeed, condition, icon);
         } catch (IOException e) {
             throw new RuntimeException("Error: Unable to get weather data", e);
@@ -62,7 +64,7 @@ public class WeatherAPI {
 
     public ForecastWeekModel getShortTermForecast(String location) {
         // https://pro.openweathermap.org/data/2.5/forecast/hourly?lat={lat}&lon={lon}&appid={API key}
-        String urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=" + locationLat + "&lon=" + locationLat  + "&appid=" + API_KEY;
+        String urlString = "https://api.openweathermap.org/data/2.5/forecast?lat=" + locationLat + "&lon=" + locationLon  + "&appid=" + API_KEY;
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -77,19 +79,9 @@ public class WeatherAPI {
 
             JSONObject jsonObject = new JSONObject(result.toString());
 
-            // Parse the response body to extract the forecast data
-            // This depends on the structure of the response from the OpenWeatherMap API
-            String forecast = parseForecast(jsonObject);
-
             return new ForecastWeekModel(jsonObject);
         } catch (IOException e) {
             throw new RuntimeException("Error: Unable to get forecast data", e);
         }
-    }
-
-    private String parseForecast(JSONObject jsonObject) {
-        // Placeholder implementation
-        // Replace this with the actual code to parse the forecast data from the response body
-        return jsonObject.toString();
     }
 }

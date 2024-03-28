@@ -1,9 +1,15 @@
-// UnitConverterView.java
+// UnitConverter.java
 package weather;
 
 import java.text.DecimalFormat;
 
-public class UnitConverterView {
+/**
+ * UnitConverter is a utility class in the Weather App that provides static methods for converting units of measurement.
+ * It supports conversion between different units of temperature (Celsius, Fahrenheit) and wind speed (m/s, km/h, mph).
+ *
+ * The class does not maintain any state and does not need to be instantiated.
+ */
+public class UnitConverter {
     public static String toCelsius(double temperature) {
         return formatDoubleToTwoDecimalPlaces(temperature - 273.15);
     }
@@ -15,20 +21,6 @@ public class UnitConverterView {
     public static String toMilesPerHourFromMetersPerSecond(double speed) {
         double convertedSpeed = speed * 2.23694; // Conversion factor
         return formatDoubleToTwoDecimalPlaces(convertedSpeed);
-    }
-
-    public static String toMetersPerSecondFromMilesPerHour(double speed) {
-        double convertedSpeed = speed / 2.23694; // Conversion factor
-        return formatDoubleToTwoDecimalPlaces(convertedSpeed);
-    }
-
-    public static String formatHumidity(double humidity) {
-        return String.format("%.2f%%", humidity);
-    }
-
-    public static String translateCondition(String condition) {
-        // Add your translation logic here
-        return condition;
     }
 
     public static String formatDoubleToTwoDecimalPlaces(double value) {

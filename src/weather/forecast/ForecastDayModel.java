@@ -1,4 +1,3 @@
-// weather.forecast.ForecastWeekModel.java
 package weather.forecast;
 
 public class ForecastDayModel {
@@ -9,6 +8,12 @@ public class ForecastDayModel {
     private String condition;
     private String icon;
 
+    /**
+     * ForecastDayModel is a class that represents the weather forecast for a specific day.
+     * It stores the date, temperature, humidity, wind speed, weather condition, and an icon representing the weather condition.
+     *
+     * The class provides getter methods to access these properties but does not provide any setter methods as the properties are intended to be set at the time of object creation and not modified afterwards.
+     */
     public ForecastDayModel(String date, double temperature, double humidity, double windSpeed, String condition, String icon) {
         this.date = date;
         this.temperature = temperature;
@@ -22,41 +27,22 @@ public class ForecastDayModel {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public double getTemperature() {
         return temperature;
-    }
-
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
     }
 
     public double getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
-    }
-
     public double getWindSpeed() {
         return windSpeed;
-    }
-
-    public void setWindSpeed(double windSpeed) {
-        this.windSpeed = windSpeed;
     }
 
     public String getCondition() {
         return condition;
     }
 
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
     public String getIcon() {
         return icon;
     }

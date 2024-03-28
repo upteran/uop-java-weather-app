@@ -2,15 +2,19 @@
 package weather.forecast;
 
 import javafx.geometry.Insets;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.text.Font;
-import weather.UnitConverterView;
 import weather.WeatherAPI;
 
+/**
+ * ForecastView is a JavaFX BorderPane that represents the view for a 5-day weather forecast in the Weather App.
+ * It displays the forecast for each day in a FlowPane, with each day's forecast being represented by a ForecastDayView.
+ * The class uses a WeatherAPI to get the forecast data and a ForecastDayModel to represent each day's forecast.
+ * It also provides a back button to navigate back to the previous view.
+ */
 public class ForecastView extends BorderPane {
     private WeatherAPI weatherAPI = new WeatherAPI();
 
@@ -30,11 +34,5 @@ public class ForecastView extends BorderPane {
             FlowPane.setMargin(dayLabel, new Insets(10, 10, 10, 10));
         }
         this.setCenter(forecastPane);
-    }
-
-    void updateTempUnits(ForecastDayModel day, String unitType) {
-    }
-
-    void updateWindSpeedUnits(ForecastDayModel day, String unitType) {
     }
 }
