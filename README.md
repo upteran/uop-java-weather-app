@@ -30,6 +30,9 @@ This is a Java application that uses the OpenWeatherMap API to fetch and display
 4. Each day's forecast is represented by a card showing the date, temperature, humidity, wind speed, and weather condition.
 5. To go back to the main screen, click on the "Back" button on the top left corner of the forecast screen.
 
+- ![Main screen](./main.png);
+- ![5 days forecast screen](./5days.png);
+
 ## Author
 
 Tereshkin Andrey

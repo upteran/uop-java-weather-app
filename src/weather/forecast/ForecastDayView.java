@@ -7,6 +7,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.control.Label;
 import weather.UnitConverter;
 
+import java.awt.*;
+
 /**
  * ForecastDayView is a JavaFX BorderPane that represents the view for a specific day's weather forecast in the Weather App.
  * It displays the date, temperature, humidity, wind speed, and weather condition for a specific day.
@@ -28,10 +30,11 @@ public class ForecastDayView extends BorderPane {
     private void updateDayLabel(ForecastDayModel day) {
         String temp = UnitConverter.toCelsius(day.getTemperature());
         dayLabel.setText("Date: " + day.getDate() +
-                "\nTemperature: " + temp +
+                "\nTemperature: " + temp + " C" +
                 "\nHumidity: " + day.getHumidity() +
-                "\nWind Speed: " + day.getWindSpeed() +
+                "\nWind Speed: " + day.getWindSpeed() + " m/s" +
                 "\nCondition: " + day.getCondition());
+        dayLabel.setFont(javafx.scene.text.Font.font(14));
     }
 
     public Label getDayLabel() {
@@ -44,13 +47,16 @@ public class ForecastDayView extends BorderPane {
 
     public void updateTempUnits(String unitType) {
         String temp;
+        String label;
         if(unitType.equals("Celsius")) {
             temp = UnitConverter.toCelsius(this.dataModel.getTemperature());
+            label = "C";
         } else {
             temp = UnitConverter.toFahrenheit(this.dataModel.getTemperature());
+            label = "F";
         }
         dayLabel.setText("Date: " + this.dataModel.getDate() +
-                "\nTemperature: " + temp +
+                "\nTemperature: " + temp + " " + label +
                 "\nHumidity: " + this.dataModel.getHumidity() +
                 "\nWind Speed: " + this.dataModel.getWindSpeed() +
                 "\nCondition: " + this.dataModel.getCondition());
@@ -58,15 +64,18 @@ public class ForecastDayView extends BorderPane {
 
     public void updateWindSpeedUnits(String unitType) {
         String speed;
-        if(unitType.equals("Meters")) {
+        String label;
+        if(unitType.equals("Meters/sec")) {
             speed = "" + this.dataModel.getWindSpeed();
+            label = "m/s";
         } else {
             speed = UnitConverter.toMilesPerHourFromMetersPerSecond(this.dataModel.getWindSpeed());
+            label = "m/h";
         }
         dayLabel.setText("Date: " + this.dataModel.getDate() +
                 "\nTemperature: " + this.dataModel.getTemperature() +
                 "\nHumidity: " + this.dataModel.getHumidity() +
-                "\nWind Speed: " + speed +
+                "\nWind Speed: " + speed + " " + label +
                 "\nCondition: " + this.dataModel.getCondition());
     }
 }

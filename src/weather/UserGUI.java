@@ -50,8 +50,10 @@ public class UserGUI extends Application {
         Button getWeatherButton = new Button("Get Weather");
 
         // Short-term forecast button
-        Button forecastButton = new Button("Short-term forecast");
+        Button forecastButton = new Button("5-days forecast");
         forecastButton.setVisible(false); // Initially hidden
+
+        Label historyTitle = new Label("Search History");
 
         // Search box
         HBox searchBox = new HBox(locationField, getWeatherButton);
@@ -66,6 +68,31 @@ public class UserGUI extends Application {
         Label errorLabel = new Label();
 
         final ForecastDayView[] currentDay = new ForecastDayView[1];
+
+        // Checkboxes
+        Label tempLabel = new Label("t unit:");
+        ComboBox<String> tempUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Celsius", "Fahrenheit"));
+        VBox tempBox = new VBox(tempLabel, tempUnitsBox);
+        tempUnitsBox.setValue("Celsius"); // Default value
+        tempUnitsBox.setOnAction(e -> {
+            String selectedUnit = tempUnitsBox.getValue();
+            currentDay[0].updateTempUnits(selectedUnit);
+        });
+
+        Label windSpeedLabel = new Label("wind speed units:");
+        ComboBox<String> windSpeedUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Meters/sec", "Miles/hours"));
+        VBox windSpeedBox = new VBox(windSpeedLabel, windSpeedUnitsBox);
+        windSpeedUnitsBox.setValue("Meters/sec"); // Default value
+        windSpeedUnitsBox.setOnAction(e -> {
+            String selectedUnit = tempUnitsBox.getValue();
+            currentDay[0].updateWindSpeedUnits(selectedUnit);
+        });
+
+
+        HBox unitsBox = new HBox(tempBox, windSpeedBox);
+        unitsBox.setSpacing(10);
+        unitsBox.setAlignment(Pos.CENTER);
+        unitsBox.setVisible(false);
 
         getWeatherButton.setOnAction(e -> {
             try {
@@ -83,52 +110,38 @@ public class UserGUI extends Application {
                 updateHistoryView();
                 // Show the forecast button
                 forecastButton.setVisible(true); // Show the button when the day forecast is shown
+                unitsBox.setVisible(true);;
             } catch (Exception ex) {
                 errorLabel.setText("An error occurred: " + ex.getMessage());
             }
         });
 
-        HBox forecastBox = new HBox(forecastPane, forecastButton); // New HBox
+        VBox forecastBox = new VBox(forecastPane, forecastButton);
+        forecastPane.setAlignment(Pos.CENTER);
         forecastBox.setSpacing(10);
-        forecastBox.setAlignment(Pos.CENTER_RIGHT);
+        forecastBox.setAlignment(Pos.CENTER);
 
-        BorderPane resultPane = new BorderPane(); // New BorderPane
+        BorderPane resultPane = new BorderPane();
         resultPane.setCenter(forecastBox);
-        BorderPane.setMargin(forecastBox, new Insets(0, 10, 0, 10)); // Add left and right margins
+        BorderPane.setMargin(forecastBox, new Insets(0, 10, 0, 10));
 
-        // Checkboxes
-        ComboBox<String> tempUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Celsius", "Fahrenheit"));
-        tempUnitsBox.setValue("Celsius"); // Default value
-        tempUnitsBox.setOnAction(e -> {
-            String selectedUnit = tempUnitsBox.getValue();
-            currentDay[0].updateTempUnits(selectedUnit);
-        });
-
-        ComboBox<String> windSpeedUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Meters", "Miles"));
-        windSpeedUnitsBox.setValue("Meters"); // Default value
-        windSpeedUnitsBox.setOnAction(e -> {
-            String selectedUnit = tempUnitsBox.getValue();
-            currentDay[0].updateWindSpeedUnits(selectedUnit);
-        });
-
-        HBox unitsBox = new HBox(tempUnitsBox, windSpeedUnitsBox);
-        unitsBox.setSpacing(10);
-        unitsBox.setAlignment(Pos.CENTER);
-
-        VBox vbox = new VBox(mainPane, errorLabel, historyView, unitsBox, resultPane);
+        VBox vbox = new VBox(mainPane, errorLabel, historyTitle, historyView, unitsBox, resultPane);
         vbox.setAlignment(Pos.CENTER); // Center vertically
 
         // Create a new BorderPane to hold the VBox and the historyView
         BorderPane rootPane = new BorderPane();
         rootPane.setCenter(vbox);
+        rootPane.setBottom(historyTitle); // Add the historyView to the bottom of the BorderPane
         rootPane.setBottom(historyView); // Add the historyView to the bottom of the BorderPane
-        Scene mainScene = new Scene(rootPane, 600, 900);
+        historyView.setPrefHeight(200);
+
+        Scene mainScene = new Scene(rootPane, 800, 600);
 
         forecastButton.setOnAction(e -> {
             Button backButton = new Button("Back");
             ForecastView forecastView = new ForecastView(locationField.getText(), backButton);
             backButton.setOnAction(event -> primaryStage.setScene(mainScene));
-            Scene forecastScene = new Scene(forecastView, 600, 900);
+            Scene forecastScene = new Scene(forecastView, 800, 800);
             primaryStage.setScene(forecastScene);
         });
 
