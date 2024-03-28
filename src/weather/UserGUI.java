@@ -17,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import weather.forecast.ForecastDayModel;
+import weather.forecast.ForecastDayView;
 import weather.forecast.ForecastIconView;
 import weather.forecast.ForecastView;
 
@@ -29,7 +30,6 @@ public class UserGUI extends Application {
 
         TextField locationField = new TextField();
         Button getWeatherButton = new Button("Get Weather");
-        Label weatherLabel = new Label();
         FlowPane forecastPane = new FlowPane();
 
         Button forecastButton = new Button("Short-term forecast");
@@ -47,22 +47,10 @@ public class UserGUI extends Application {
             String location = locationField.getText();
             ForecastDayModel day = weatherAPI.getWeatherData(location);
             System.out.println(day.getDate());
-            weatherLabel.setText("Date: " + day.getDate() +
-                    "\nTemperature: " + day.getTemperature() +
-                    "\nHumidity: " + day.getHumidity() +
-                    "\nWind Speed: " + day.getWindSpeed() +
-                    "\nCondition: " + day.getCondition());
+            Label weatherLabel = new ForecastDayView(day).getDayLabel();
 
-            ImageView image = new ForecastIconView(day.getIcon()).getForecastIconView();
-            weatherLabel.setGraphic(image);
-
-            if (forecastPane.getChildren().contains(weatherLabel)) {
-                forecastPane.getChildren().remove(weatherLabel);
-            }
             forecastPane.getChildren().add(weatherLabel);
-
             FlowPane.setMargin(weatherLabel, new Insets(10, 10, 10, 10));
-
             forecastButton.setVisible(true); // Show the button when the day forecast is shown
         });
 
