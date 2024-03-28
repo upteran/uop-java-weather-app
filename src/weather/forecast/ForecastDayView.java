@@ -14,16 +14,19 @@ import weather.WeatherAPI;
 public class ForecastDayView extends BorderPane {
     private Label dayLabel = new Label();
     private FlowPane pane = new FlowPane();
+    private ForecastDayModel dataModel;
 
     public ForecastDayView(ForecastDayModel day) {
+        this.dataModel = day;
         updateDayLabel(day);
         ImageView image = new ForecastIconView(day.getIcon()).getForecastIconView();
         dayLabel.setGraphic(image);
     }
 
     private void updateDayLabel(ForecastDayModel day) {
+        String temp = UnitConverterView.toCelsius(day.getTemperature());
         dayLabel.setText("Date: " + day.getDate() +
-                "\nTemperature: " + day.getTemperature() +
+                "\nTemperature: " + temp +
                 "\nHumidity: " + day.getHumidity() +
                 "\nWind Speed: " + day.getWindSpeed() +
                 "\nCondition: " + day.getCondition());
@@ -37,31 +40,31 @@ public class ForecastDayView extends BorderPane {
         return this.pane;
     }
 
-    void updateTempUnits(ForecastDayModel day, String unitType) {
-        double temp;
+    public void updateTempUnits(String unitType) {
+        String temp;
         if(unitType.equals("Celsius")) {
-            temp = UnitConverterView.toCelsius(day.getTemperature());
+            temp = UnitConverterView.toCelsius(this.dataModel.getTemperature());
         } else {
-            temp = day.getTemperature();
+            temp = UnitConverterView.toFahrenheit(this.dataModel.getTemperature());
         }
-        dayLabel.setText("Date: " + day.getDate() +
+        dayLabel.setText("Date: " + this.dataModel.getDate() +
                 "\nTemperature: " + temp +
-                "\nHumidity: " + day.getHumidity() +
-                "\nWind Speed: " + day.getWindSpeed() +
-                "\nCondition: " + day.getCondition());
+                "\nHumidity: " + this.dataModel.getHumidity() +
+                "\nWind Speed: " + this.dataModel.getWindSpeed() +
+                "\nCondition: " + this.dataModel.getCondition());
     }
 
-    void updateWindSpeedUnits(ForecastDayModel day, String unitType) {
-        double speed;
-        if(unitType.equals("Kilometers")) {
-            speed = UnitConverterView.toKilometersPerHour(day.getWindSpeed());
+    public void updateWindSpeedUnits(String unitType) {
+        String speed;
+        if(unitType.equals("Meters")) {
+            speed = "" + this.dataModel.getWindSpeed();
         } else {
-            speed = day.getWindSpeed();
+            speed = UnitConverterView.toMilesPerHourFromMetersPerSecond(this.dataModel.getWindSpeed());
         }
-        dayLabel.setText("Date: " + day.getDate() +
-                "\nTemperature: " + day.getTemperature() +
-                "\nHumidity: " + day.getHumidity() +
+        dayLabel.setText("Date: " + this.dataModel.getDate() +
+                "\nTemperature: " + this.dataModel.getTemperature() +
+                "\nHumidity: " + this.dataModel.getHumidity() +
                 "\nWind Speed: " + speed +
-                "\nCondition: " + day.getCondition());
+                "\nCondition: " + this.dataModel.getCondition());
     }
 }

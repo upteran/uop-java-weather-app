@@ -1,21 +1,25 @@
 // UnitConverterView.java
 package weather;
 
+import java.text.DecimalFormat;
+
 public class UnitConverterView {
-    public static double toCelsius(double temperature) {
-        return (temperature - 32) * 5/9;
+    public static String toCelsius(double temperature) {
+        return formatDoubleToTwoDecimalPlaces(temperature - 273.15);
     }
 
-    public static double toFahrenheit(double temperature) {
-        return temperature * 9/5 + 32;
+    public static String toFahrenheit(double temperature) {
+        return formatDoubleToTwoDecimalPlaces((temperature - 273.15) * 9/5 + 32);
     }
 
-    public static double toKilometersPerHour(double windSpeed) {
-        return windSpeed * 3.6;
+    public static String toMilesPerHourFromMetersPerSecond(double speed) {
+        double convertedSpeed = speed * 2.23694; // Conversion factor
+        return formatDoubleToTwoDecimalPlaces(convertedSpeed);
     }
 
-    public static double toMilesPerHour(double windSpeed) {
-        return windSpeed / 1.609;
+    public static String toMetersPerSecondFromMilesPerHour(double speed) {
+        double convertedSpeed = speed / 2.23694; // Conversion factor
+        return formatDoubleToTwoDecimalPlaces(convertedSpeed);
     }
 
     public static String formatHumidity(double humidity) {
@@ -25,5 +29,10 @@ public class UnitConverterView {
     public static String translateCondition(String condition) {
         // Add your translation logic here
         return condition;
+    }
+
+    public static String formatDoubleToTwoDecimalPlaces(double value) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return df.format(value);
     }
 }

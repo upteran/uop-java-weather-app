@@ -1,21 +1,22 @@
-// History.java
+// HistoryModel.java
 package weather;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class HistoryModel {
-    private List<String> history;
+    private Map<String, LocalDateTime> history;
 
     public HistoryModel() {
-        this.history = new ArrayList<>();
+        this.history = new LinkedHashMap<>();
     }
 
     public void addSearch(String search) {
-        this.history.add(search);
+        this.history.put(search, LocalDateTime.now());
     }
 
-    public List<String> getHistory() {
+    public Map<String, LocalDateTime> getHistory() {
         return history;
     }
 }

@@ -2,12 +2,12 @@
 package weather;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -21,11 +21,21 @@ import weather.forecast.ForecastDayView;
 import weather.forecast.ForecastIconView;
 import weather.forecast.ForecastView;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Map;
+
 public class UserGUI extends Application {
     private WeatherAPI weatherAPI = new WeatherAPI();
+    private HistoryModel historyModel;
+    private ListView<String> historyView;
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws URISyntaxException {
+        historyModel = new HistoryModel();
+        historyView = new ListView<>();
+
         primaryStage.setTitle("Weather App");
 
         TextField locationField = new TextField();
@@ -43,15 +53,30 @@ public class UserGUI extends Application {
         mainPane.setCenter(searchBox);
         mainPane.setPrefWidth(Screen.getPrimary().getBounds().getWidth() * 0.8);
 
-        getWeatherButton.setOnAction(e -> {
-            String location = locationField.getText();
-            ForecastDayModel day = weatherAPI.getWeatherData(location);
-            System.out.println(day.getDate());
-            Label weatherLabel = new ForecastDayView(day).getDayLabel();
+        // error
+        Label errorLabel = new Label();
 
-            forecastPane.getChildren().add(weatherLabel);
-            FlowPane.setMargin(weatherLabel, new Insets(10, 10, 10, 10));
-            forecastButton.setVisible(true); // Show the button when the day forecast is shown
+        final ForecastDayView[] currentDay = new ForecastDayView[1];
+
+        getWeatherButton.setOnAction(e -> {
+            try {
+                String location = locationField.getText();
+                ForecastDayModel day = weatherAPI.getWeatherData(location);
+                System.out.println(day.getDate());
+                currentDay[0] = new ForecastDayView(day);
+
+                forecastPane.getChildren().clear(); // Clear the forecastPane
+                forecastPane.getChildren().add(currentDay[0].getDayLabel());
+                FlowPane.setMargin(currentDay[0].getDayLabel(), new Insets(10, 10, 10, 10));
+
+                // add location to history
+                historyModel.addSearch(location); // Save the search input and its timestamp
+                updateHistoryView();
+                // show the forecast button
+                forecastButton.setVisible(true); // Show the button when the day forecast is shown
+            } catch (Exception ex) {
+                errorLabel.setText("An error occurred: " + ex.getMessage());
+            }
         });
 
         HBox forecastBox = new HBox(forecastPane, forecastButton); // New HBox
@@ -62,10 +87,33 @@ public class UserGUI extends Application {
         resultPane.setCenter(forecastBox);
         BorderPane.setMargin(forecastBox, new Insets(0, 10, 0, 10)); // Add left and right margins
 
-        VBox vbox = new VBox(mainPane, resultPane);
+        // checkboxes
+        ComboBox<String> tempUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Celsius", "Fahrenheit"));
+        tempUnitsBox.setValue("Celsius"); // Default value
+        tempUnitsBox.setOnAction(e -> {
+            String selectedUnit = tempUnitsBox.getValue();
+            currentDay[0].updateTempUnits(selectedUnit);
+        });
+
+        ComboBox<String> windSpeedUnitsBox = new ComboBox<>(FXCollections.observableArrayList("Meters", "Miles"));
+        windSpeedUnitsBox.setValue("Meters"); // Default value
+        windSpeedUnitsBox.setOnAction(e -> {
+            String selectedUnit = tempUnitsBox.getValue();
+            currentDay[0].updateWindSpeedUnits(selectedUnit);
+        });
+
+        HBox unitsBox = new HBox(tempUnitsBox, windSpeedUnitsBox);
+        unitsBox.setSpacing(10);
+        unitsBox.setAlignment(Pos.CENTER);
+
+        VBox vbox = new VBox(mainPane, errorLabel, historyView, unitsBox, resultPane);
         vbox.setAlignment(Pos.CENTER); // Center vertically
 
-        StackPane rootPane = new StackPane(vbox); // Center horizontally
+
+        // Create a new BorderPane to hold the VBox and the historyView
+        BorderPane rootPane = new BorderPane();
+        rootPane.setCenter(vbox);
+        rootPane.setBottom(historyView); // Add the historyView to the bottom of the BorderPane
         Scene mainScene = new Scene(rootPane, 600, 900);
 
         forecastButton.setOnAction(e -> {
@@ -78,6 +126,14 @@ public class UserGUI extends Application {
 
         primaryStage.setScene(mainScene);
         primaryStage.show();
+    }
+
+    private void updateHistoryView() {
+        ObservableList<String> items = FXCollections.observableArrayList();
+        for (Map.Entry<String, LocalDateTime> entry : historyModel.getHistory().entrySet()) {
+            items.add(entry.getKey() + " - " + entry.getValue());
+        }
+        historyView.setItems(items);
     }
 
     public void display() {
